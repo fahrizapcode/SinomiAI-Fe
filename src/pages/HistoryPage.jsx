@@ -36,9 +36,10 @@ const HistoryPage = () => {
   const filteredHistory = history.filter(item => {
     const search = searchTerm.toLowerCase();
     const titleMatch = item.processing?.title ? item.processing.title.toLowerCase().includes(search) : false;
+    const productsMatch = item.products ? item.products.some(p => p.name.toLowerCase().includes(search)) : false;
     // Fallback for old data where processing was an array
     const oldArrayMatch = Array.isArray(item.processing) && item.processing.some(p => p.toLowerCase().includes(search));
-    return item.category.toLowerCase().includes(search) || titleMatch || oldArrayMatch;
+    return item.category.toLowerCase().includes(search) || titleMatch || productsMatch || oldArrayMatch;
   });
 
   return (
@@ -116,29 +117,67 @@ const HistoryPage = () => {
                     </h3>
                   </div>
                   <div className="text-sm text-slate-300 mb-4 flex-1">
-                    <p className="font-medium text-slate-400 mb-1">Pengolahan:</p>
-                    {item.processing?.title ? (
+                    {item.products ? (
                       <div>
-                        <p className="font-semibold text-white mb-1">{item.processing.title}</p>
-                        <p className="text-slate-400 line-clamp-2">{item.processing.steps[0]}</p>
+                        <p className="font-medium text-slate-400 mb-1">Rekomendasi Produk:</p>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {item.products.slice(0, 3).map((prod) => (
+                            <span key={prod.id} className="px-2 py-1 bg-slate-800 rounded-lg text-xs border border-white/10">
+                              {prod.name}
+                            </span>
+                          ))}
+                          {item.products.length > 3 && (
+                            <span className="px-2 py-1 bg-slate-800 rounded-lg text-xs border border-white/10">
+                              +{item.products.length - 3} lagi
+                            </span>
+                          )}
+                        </div>
                       </div>
                     ) : (
-                      <ul className="list-disc pl-4 space-y-1">
-                        {(Array.isArray(item.processing) ? item.processing : []).slice(0, 2).map((p, i) => (
-                          <li key={i} className="truncate">{p}</li>
-                        ))}
-                      </ul>
+                      <>
+                        <p className="font-medium text-slate-400 mb-1">Pengolahan:</p>
+                        {item.processing?.title ? (
+                          <div>
+                            <p className="font-semibold text-white mb-1">{item.processing.title}</p>
+                            <p className="text-slate-400 line-clamp-2">{item.processing.steps[0]}</p>
+                          </div>
+                        ) : (
+                          <ul className="list-disc pl-4 space-y-1">
+                            {(Array.isArray(item.processing) ? item.processing : []).slice(0, 2).map((p, i) => (
+                              <li key={i} className="truncate">{p}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </>
                     )}
                   </div>
-                  <div className="pt-4 border-t border-white/10 mt-auto">
+                  <div className="pt-4 border-t border-white/10 mt-auto flex flex-col gap-2">
                     <Link
                       to="/result"
-                      state={{ result: { category: item.category, processing: item.processing, value: item.value, confidence: '100% (Riwayat)', marketplaces: [] }, image: item.image }}
-                      className="text-green-400 hover:text-green-300 text-sm font-medium flex items-center gap-1 group/link"
+                      state={{ result: { category: item.category, processing: item.processing, products: item.products, value: item.value, confidence: '100% (Riwayat)' }, image: item.image }}
+                      className="text-green-400 hover:text-green-300 text-sm font-medium flex items-center justify-center py-2 bg-green-500/10 rounded-xl gap-1 group/link"
                     >
                       Lihat Detail
                       <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                     </Link>
+                    <button
+                      onClick={() => {
+                        const token = localStorage.getItem('token');
+                        if (!token) {
+                          window.location.href = '/login?redirect=/upload-product';
+                        } else {
+                          const initialData = {
+                            category: item.category,
+                            name: item.processing?.title || (item.products && item.products[0]?.name) || '',
+                            description: item.processing?.steps ? item.processing.steps.join(' ') : ''
+                          };
+                          window.location.href = `/upload-product?data=${encodeURIComponent(JSON.stringify(initialData))}`;
+                        }
+                      }}
+                      className="text-white hover:text-white text-sm font-medium flex items-center justify-center py-2 bg-blue-500 hover:bg-blue-600 rounded-xl transition-colors"
+                    >
+                      Jadikan Produk Etalase
+                    </button>
                   </div>
                 </div>
               </motion.div>

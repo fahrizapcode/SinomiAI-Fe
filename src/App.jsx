@@ -6,6 +6,10 @@ import LandingPage from './pages/LandingPage';
 import ScanPage from './pages/ScanPage';
 import ResultPage from './pages/ResultPage';
 import HistoryPage from './pages/HistoryPage';
+import EtalasePage from './pages/EtalasePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import UploadProductPage from './pages/UploadProductPage';
 import AnimatedPage from './components/AnimatedPage';
 
 const routeOrder = {
@@ -13,6 +17,10 @@ const routeOrder = {
   '/scan': 1,
   '/result': 2,
   '/history': 3,
+  '/etalase': 4,
+  '/login': 5,
+  '/register': 6,
+  '/upload-product': 7,
 };
 
 function App() {
@@ -39,6 +47,10 @@ function App() {
             <Route path="/scan" element={<AnimatedPage direction={direction}><ScanPage /></AnimatedPage>} />
             <Route path="/result" element={<AnimatedPage direction={direction}><ResultPage /></AnimatedPage>} />
             <Route path="/history" element={<AnimatedPage direction={direction}><HistoryPage /></AnimatedPage>} />
+            <Route path="/etalase" element={<AnimatedPage direction={direction}><EtalasePage /></AnimatedPage>} />
+            <Route path="/login" element={<AnimatedPage direction={direction}><LoginPage /></AnimatedPage>} />
+            <Route path="/register" element={<AnimatedPage direction={direction}><RegisterPage /></AnimatedPage>} />
+            <Route path="/upload-product" element={<AnimatedPage direction={direction}><UploadProductPage /></AnimatedPage>} />
           </Routes>
         </AnimatePresence>
       </main>

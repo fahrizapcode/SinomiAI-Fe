@@ -49,20 +49,8 @@ const ScanPage = () => {
       // Dummy API Call
       const result = await classifyWaste(file);
       
-      // Save to IndexedDB
-      // We store the previewUrl as a data URL or just rely on blob URL for current session.
-      // For real app, convert to base64 or upload to server.
-      // Here we will use base64 for history to persist.
       const base64 = await convertToBase64(file);
       
-      const historyItem = {
-        image: base64,
-        category: result.category,
-        processing: result.processing,
-        value: result.value
-      };
-      await addHistory(historyItem);
-
       clearInterval(stepInterval);
       navigate('/result', { state: { result, image: base64 } });
     } catch (error) {

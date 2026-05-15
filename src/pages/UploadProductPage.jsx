@@ -1,0 +1,197 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Upload, ArrowLeft, Image as ImageIcon, CheckCircle } from 'lucide-react';
+import { uploadProduct } from '../utils/api';
+
+const UploadProductPage = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    category: '',
+    price: '',
+    description: '',
+    location: '',
+    whatsapp_number: ''
+  });
+  const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login?redirect=/upload-product');
+      return;
+    }
+
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      setFormData(prev => ({
+        ...prev,
+        location: user.location || '',
+        whatsapp_number: user.whatsapp_number || ''
+      }));
+    }
+
+    const searchParams = new URLSearchParams(location.search);
+    const dataParam = searchParams.get('data');
+    if (dataParam) {
+      try {
+        const initialData = JSON.parse(decodeURIComponent(dataParam));
+        setFormData(prev => ({
+          ...prev,
+          name: initialData.name || '',
+          category: initialData.category || '',
+          description: initialData.description || ''
+        }));
+      } catch (e) {
+        console.error("Failed to parse initial data");
+      }
+    }
+  }, [navigate, location]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      setError("Silakan upload foto produk.");
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    
+    try {
+      const token = localStorage.getItem('token');
+      const submitData = new FormData();
+      Object.keys(formData).forEach(key => submitData.append(key, formData[key]));
+      submitData.append('image', file);
+
+      await uploadProduct(submitData, token);
+      navigate('/etalase');
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="container mx-auto px-6 py-12 min-h-[80vh]">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors mb-8">
+        <ArrowLeft className="w-5 h-5" />
+        Kembali
+      </button>
+
+      <div className="max-w-2xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glassmorphism-card p-8 rounded-3xl"
+        >
+          <div className="mb-8 border-b border-white/10 pb-6">
+            <h2 className="text-3xl font-semibold text-white mb-2">Pamerkan Produkmu</h2>
+            <p className="text-slate-400">Isi detail produk daur ulang yang ingin kamu tampilkan di Etalase.</p>
+          </div>
+
+          {error && <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl mb-6 text-sm">{error}</div>}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2">Foto Produk</label>
+                {!previewUrl ? (
+                  <div
+                    className="border-2 border-dashed border-green-500/30 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 hover:bg-green-500/5 hover:border-green-400 transition-all cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <div className="p-3 bg-slate-800 rounded-full">
+                      <Upload className="w-6 h-6 text-green-400" />
+                    </div>
+                    <p className="text-sm font-medium text-white">Klik untuk memilih foto</p>
+                  </div>
+                ) : (
+                  <div className="relative rounded-2xl overflow-hidden aspect-video bg-slate-900 border border-green-500/20 group">
+                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 flex items-center gap-2 text-sm font-medium"
+                      >
+                        <ImageIcon className="w-4 h-4" /> Ganti Foto
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1">Nama Produk</label>
+                <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 focus:border-green-500 rounded-xl text-white outline-none" placeholder="Contoh: Tas Daur Ulang" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1">Kategori</label>
+                <input type="text" name="category" required value={formData.category} onChange={handleChange} className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 focus:border-green-500 rounded-xl text-white outline-none" placeholder="Contoh: Anorganik" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1">Harga (Rp)</label>
+                <input type="number" name="price" required value={formData.price} onChange={handleChange} className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 focus:border-green-500 rounded-xl text-white outline-none" placeholder="50000" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1">Lokasi</label>
+                <input type="text" name="location" required value={formData.location} onChange={handleChange} className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 focus:border-green-500 rounded-xl text-white outline-none" placeholder="Jakarta" />
+              </div>
+
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-slate-300 mb-1">Nomor WhatsApp Aktif</label>
+                <input type="text" name="whatsapp_number" required value={formData.whatsapp_number} onChange={handleChange} className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 focus:border-green-500 rounded-xl text-white outline-none" placeholder="081234567890" />
+              </div>
+
+              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-slate-300 mb-1">Deskripsi & Cerita Produk</label>
+                <textarea name="description" required value={formData.description} onChange={handleChange} rows="4" className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 focus:border-green-500 rounded-xl text-white outline-none resize-none" placeholder="Ceritakan bahan yang digunakan dan proses pembuatannya..."></textarea>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 bg-green-500 hover:bg-green-400 text-slate-950 font-semibold rounded-xl flex items-center justify-center gap-2 transition-all mt-6 disabled:opacity-70"
+            >
+              {loading ? (
+                <div className="w-5 h-5 rounded-full border-2 border-slate-900 border-t-transparent animate-spin" />
+              ) : (
+                <>
+                  <CheckCircle className="w-5 h-5" /> Publish ke Etalase
+                </>
+              )}
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default UploadProductPage;
