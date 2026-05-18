@@ -28,14 +28,12 @@ function App() {
   const [direction, setDirection] = useState(1);
   const [prevPath, setPrevPath] = useState(location.pathname);
 
-  useEffect(() => {
-    if (location.pathname !== prevPath) {
-      const prevOrder = routeOrder[prevPath] ?? 0;
-      const currentOrder = routeOrder[location.pathname] ?? 0;
-      setDirection(currentOrder >= prevOrder ? 1 : -1);
-      setPrevPath(location.pathname);
-    }
-  }, [location.pathname, prevPath]);
+  if (location.pathname !== prevPath) {
+    const prevOrder = routeOrder[prevPath] ?? 0;
+    const currentOrder = routeOrder[location.pathname] ?? 0;
+    setDirection(currentOrder >= prevOrder ? 1 : -1);
+    setPrevPath(location.pathname);
+  }
   
   return (
     <div className="min-h-screen text-white font-sans selection:bg-green-500/30 flex flex-col relative">

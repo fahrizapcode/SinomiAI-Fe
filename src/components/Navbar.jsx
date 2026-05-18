@@ -42,9 +42,8 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'glassmorphism py-3' : 'bg-transparent py-5'
-      }`}
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'glassmorphism py-3' : 'bg-transparent py-5'
+        }`}
     >
       <div className="container mx-auto px-6 lg:px-12 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2 group">
@@ -64,9 +63,8 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className={`relative flex items-center text-sm font-medium transition-colors hover:text-green-400 ${
-                  isActive ? 'text-green-400' : 'text-slate-300'
-                }`}
+                className={`relative flex items-center text-sm font-medium transition-colors hover:text-green-400 ${isActive ? 'text-green-400' : 'text-slate-300'
+                  }`}
               >
                 {link.icon}
                 {link.name}
@@ -119,9 +117,8 @@ const Navbar = () => {
                 key={link.name}
                 to={link.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center text-lg font-medium py-2 transition-colors ${
-                  location.pathname === link.path ? 'text-green-400' : 'text-slate-300'
-                }`}
+                className={`flex items-center text-lg font-medium py-2 transition-colors ${location.pathname === link.path ? 'text-green-400' : 'text-slate-300'
+                  }`}
               >
                 {link.icon}
                 {link.name}
@@ -131,7 +128,7 @@ const Navbar = () => {
             {user ? (
               <div className="flex flex-col gap-3">
                 <span className="text-green-400 font-medium px-1">Hai, {user.name}</span>
-                <button 
+                <button
                   onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
                   className="flex items-center gap-2 text-red-400 py-2 hover:bg-red-400/10 rounded-xl px-2 transition-colors w-fit"
                 >

@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Scan, Recycle, Database, Sparkles, Image as ImageIcon, Bot, Brain } from 'lucide-react';
-
 const FeatureCard = ({ icon, title, description, delay }) => (
   <div
     className="glassmorphism-card hover:rotate-3 p-8 rounded-2xl flex flex-col items-start gap-4 transition-transform cursor-pointer"
@@ -42,13 +41,6 @@ const LandingPage = () => {
     <div className="flex flex-col gap-24">
       {/* Hero Section */}
       <section className="container mx-auto px-6 lg:px-12 pt-6 min-h-[85vh] grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        {/* Mobile Badge */}
-        <div className="lg:hidden flex justify-center order-1 mb-[-2rem] z-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glassmorphism border-green-500/20 text-green-400 text-sm font-medium">
-            <Sparkles className="w-4 h-4" />
-            <span>AI-Powered Circular Economy</span>
-          </div>
-        </div>
 
         {/* Hero Animation Right (Orbit) - Order 2 on mobile */}
         <motion.div
@@ -112,11 +104,7 @@ const LandingPage = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6 z-10 order-3 lg:order-1"
         >
-          {/* Desktop Badge */}
-          <div className="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full glassmorphism border-green-500/20 text-green-400 text-sm font-medium mb-2">
-            <Sparkles className="w-4 h-4" />
-            <span>AI-Powered Circular Economy</span>
-          </div>
+
           <h1 className="text-5xl lg:text-7xl font-semibold text-white leading-tight">
             Transform <span className="text-gradient">Waste</span> Into <br className="hidden lg:block" /> Value with AI
           </h1>
