@@ -36,7 +36,7 @@ function App() {
   }
   
   return (
-    <div className="min-h-screen text-white font-sans selection:bg-green-500/30 flex flex-col relative">
+    <div className="min-h-screen text-slate-800 font-sans selection:bg-blue-100 flex flex-col relative">
       <Navbar />
       <main className="pt-20 pb-12 overflow-x-hidden flex-1 flex flex-col relative">
         <AnimatePresence mode="wait" custom={direction}>
@@ -52,7 +52,7 @@ function App() {
           </Routes>
         </AnimatePresence>
       </main>
-      <footer className="border-t border-white/10 glassmorphism py-8 text-center text-slate-500 w-full mt-auto relative z-10">
+      <footer className="border-t border-slate-100 bg-white py-8 text-center text-slate-500 w-full mt-auto relative z-10">
         <p>© 2026 SinomiAI. Transform Waste Into Value.</p>
       </footer>
     </div>
