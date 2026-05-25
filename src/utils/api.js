@@ -23,14 +23,14 @@ export const classifyWaste = async (imageFile) => {
   }
 };
 
-export const generateStepByStep = async (productId) => {
+export const generateStepByStep = async (wasteType) => {
   try {
     const response = await fetch(`${API_URL}/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ productId }),
+      body: JSON.stringify({ wasteType }),
     });
 
     if (!response.ok) {
