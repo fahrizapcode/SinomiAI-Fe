@@ -2,14 +2,15 @@
 
 const API_URL = 'http://localhost:5000/api';
 
-export const classifyWaste = async (imageFile) => {
-  const formData = new FormData();
-  formData.append('image', imageFile);
 
+export const generateProducts = async (wasteType) => {
   try {
-    const response = await fetch(`${API_URL}/classify`, {
+    const response = await fetch(`${API_URL}/generate/products`, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ wasteType }),
     });
 
     if (!response.ok) {
@@ -18,19 +19,19 @@ export const classifyWaste = async (imageFile) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Error classifying waste:", error);
+    console.error("Error generating products:", error);
     throw error;
   }
 };
 
-export const generateStepByStep = async (wasteType) => {
+export const generateStepByStep = async (wasteType, productName) => {
   try {
-    const response = await fetch(`${API_URL}/generate`, {
+    const response = await fetch(`${API_URL}/generate/steps`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ wasteType }),
+      body: JSON.stringify({ wasteType, productName }),
     });
 
     if (!response.ok) {

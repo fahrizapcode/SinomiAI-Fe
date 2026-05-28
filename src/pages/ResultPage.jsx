@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, Link, Navigate, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ArrowLeft, CheckCircle, Lightbulb, RefreshCw, 
-  Leaf, Droplet, Bug, Sprout, FlaskConical, 
+import {
+  ArrowLeft, CheckCircle, Lightbulb, RefreshCw,
+  Leaf, Droplet, Bug, Sprout, FlaskConical,
   Flower2, Box, PenTool, Layers, ChevronRight,
   Clock, TrendingUp, Hammer, DollarSign, ShoppingCart, Info, Wrench, ListChecks
 } from 'lucide-react';
-import { generateStepByStep } from '../utils/api';
+import { generateProducts, generateStepByStep } from '../utils/api';
 import { addHistory } from '../utils/db';
 
 const IconMap = {
-  Leaf, Droplet, Bug, Sprout, FlaskConical, 
+  Leaf, Droplet, Bug, Sprout, FlaskConical,
   Flower2, Box, PenTool, Lightbulb, Layers
 };
 
@@ -19,7 +19,9 @@ const ResultPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { result, image } = location.state || {};
-  
+
+  const [products, setProducts] = useState([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [productDetails, setProductDetails] = useState(null);
@@ -28,22 +30,37 @@ const ResultPage = () => {
     return <Navigate to="/scan" />;
   }
 
-  const isOrganic = result.category.toLowerCase() === 'organik';
-  const products = result.products || [];
+  const isOrganic = result.category.toLowerCase().includes('organik');
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoadingProducts(true);
+        const data = await generateProducts(result.category);
+        setProducts(data.products || []);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+
+    fetchProducts();
+  }, [result.category]);
 
   const handleGenerate = async () => {
     if (!selectedProduct) return;
+
     setIsGenerating(true);
     try {
-      const data = await generateStepByStep(selectedProduct.id);
+      const data = await generateStepByStep(result.category, selectedProduct.name);
       setProductDetails(data.details);
-      
+
       await addHistory({
         image: image,
         category: result.category,
-        products: [selectedProduct],
         processing: data.details,
-        value: selectedProduct.value
+        value: data.details.value
       });
     } catch (error) {
       console.error(error);
@@ -53,8 +70,8 @@ const ResultPage = () => {
   };
 
   const resetSelection = () => {
-    setSelectedProduct(null);
     setProductDetails(null);
+    setSelectedProduct(null);
   };
 
   return (
@@ -105,79 +122,82 @@ const ResultPage = () => {
                       <Lightbulb className="w-6 h-6 text-yellow-600" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-slate-900">Pilih Produk Bernilai</h2>
-                      <p className="text-slate-600 mt-1">Opsi pengolahan terbaik berdasarkan jenis sampah.</p>
+                      <h2 className="text-2xl font-bold text-slate-900">Rekomendasi AI</h2>
+                      <p className="text-slate-600 mt-1">Pilih produk bernilai yang ingin kamu buat dari sampah jenis {result.category}.</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-3">
-                    {products.map((product) => {
-                      const isSelected = selectedProduct?.id === product.id;
-                      return (
-                        <motion.div
-                          key={product.id}
-                          whileHover={{ scale: 1.005 }}
-                          whileTap={{ scale: 0.995 }}
-                          onClick={() => setSelectedProduct(product)}
-                          className={`relative p-5 rounded-xl border-2 transition-all cursor-pointer flex flex-col xl:flex-row xl:items-center justify-between gap-4 ${
-                            isSelected 
-                              ? 'border-blue-500 bg-blue-50/30' 
-                              : 'border-slate-100 bg-slate-50/30 hover:border-blue-200 hover:bg-blue-50/10'
-                          }`}
-                        >
-                          <div className="flex-1 pr-8 xl:pr-0">
-                            <h3 className="text-lg font-bold text-slate-800 mb-2 xl:mb-0">{product.name}</h3>
-                          </div>
-                          
-                          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm xl:justify-end">
-                            <div className="flex items-center gap-2 text-slate-600 font-medium">
-                              <TrendingUp className="w-4 h-4 text-blue-600" />
-                              <span>{product.value}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-600 font-medium">
-                              <Hammer className="w-4 h-4 text-orange-650" />
-                              <span>Tingkat: {product.difficulty}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-600 font-medium">
-                              <Clock className="w-4 h-4 text-blue-600" />
-                              <span>{product.time}</span>
-                            </div>
-                          </div>
+                  {isLoadingProducts ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <RefreshCw className="w-8 h-8 text-blue-500 animate-spin mb-4" />
+                      <p className="text-slate-600 font-medium">AI sedang memikirkan ide-ide kreatif...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {products.map((product) => {
+                          const isSelected = selectedProduct?.id === product.id;
+                          return (
+                            <motion.div
+                              key={product.id}
+                              whileHover={{ y: -2 }}
+                              onClick={() => setSelectedProduct(product)}
+                              className={`p-5 rounded-xl cursor-pointer border-2 transition-all duration-300 ${isSelected
+                                ? 'border-blue-500 bg-blue-50/50 shadow-md shadow-blue-500/10'
+                                : 'border-slate-100 bg-white hover:border-blue-200 hover:shadow-md'
+                                }`}
+                            >
+                              <div className="flex justify-between items-start mb-3">
+                                <h3 className={`font-bold text-lg ${isSelected ? 'text-blue-700' : 'text-slate-800'}`}>
+                                  {product.name}
+                                </h3>
+                                {isSelected && <CheckCircle className="w-5 h-5 text-blue-500" />}
+                              </div>
+                              <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-sm">
+                                  <DollarSign className="w-4 h-4 text-green-500" />
+                                  <span className="font-semibold text-slate-700">{product.value}</span>
+                                </div>
+                                <div className="flex items-center gap-4 text-sm text-slate-500">
+                                  <span className="flex items-center gap-1">
+                                    <Hammer className="w-4 h-4" />
+                                    {product.difficulty}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="w-4 h-4" />
+                                    {product.time}
+                                  </span>
+                                </div>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
 
-                          {isSelected && (
-                            <div className="absolute top-5 right-5 xl:static text-blue-600 flex-shrink-0">
-                              <CheckCircle className="w-6 h-6" />
-                            </div>
-                          )}
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-
-                  {selectedProduct && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-8"
-                    >
-                      <button
-                        onClick={handleGenerate}
-                        disabled={isGenerating}
-                        className="w-full py-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg shadow-md shadow-blue-500/20 hover:shadow-lg transition-all flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: selectedProduct ? 1 : 0.5, y: 0 }}
+                        className="mt-8"
                       >
-                        {isGenerating ? (
-                          <>
-                            <RefreshCw className="w-5 h-5 animate-spin" />
-                            AI Sedang Menyusun Panduan...
-                          </>
-                        ) : (
-                          <>
-                            Generate Step-by-Step Pengolahan
-                            <ChevronRight className="w-5 h-5" />
-                          </>
-                        )}
-                      </button>
-                    </motion.div>
+                        <button
+                          onClick={handleGenerate}
+                          disabled={!selectedProduct || isGenerating}
+                          className="w-full py-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg shadow-md shadow-blue-500/20 hover:shadow-lg transition-all flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                        >
+                          {isGenerating ? (
+                            <>
+                              <RefreshCw className="w-5 h-5 animate-spin" />
+                              AI Sedang Menyusun Panduan...
+                            </>
+                          ) : (
+                            <>
+                              Generate Step-by-Step Pengolahan
+                              <ChevronRight className="w-5 h-5" />
+                            </>
+                          )}
+                        </button>
+                      </motion.div>
+                    </>
                   )}
                 </div>
               </motion.div>
@@ -190,7 +210,7 @@ const ResultPage = () => {
               >
                 <div className="glassmorphism-card p-8 rounded-xl relative overflow-hidden border border-slate-100 shadow-md">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-                  
+
                   <div className="flex justify-between items-start mb-8">
                     <div>
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm font-semibold mb-3">
@@ -266,7 +286,7 @@ const ResultPage = () => {
                         </h4>
                         <p className="text-sm text-slate-700 leading-relaxed font-medium">{productDetails.tips}</p>
                       </div>
-                      
+
                       <div className="p-5 rounded-xl bg-blue-50 border border-blue-200/50">
                         <h4 className="font-bold text-blue-700 flex items-center gap-2 mb-2">
                           <ShoppingCart className="w-4 h-4" />

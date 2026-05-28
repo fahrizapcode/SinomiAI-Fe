@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Camera, Image as ImageIcon, X } from 'lucide-react';
-import { classifyWaste } from '../utils/api';
+import { useDeteksiSampah } from '../hooks/useDeteksiSampah';
 import { addHistory } from '../utils/db';
 
 const ScanPage = () => {
@@ -12,6 +12,7 @@ const ScanPage = () => {
   const [scanStep, setScanStep] = useState(0);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+  const { isReady, statusText, isPredicting, hasil, prediksi, resetHasil } = useDeteksiSampah();
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -46,13 +47,27 @@ const ScanPage = () => {
     }, 1000);
 
     try {
-      // Dummy API Call
-      const result = await classifyWaste(file);
+      // Create image element for TFJS
+      const imgElement = new Image();
+      imgElement.src = previewUrl;
+      await new Promise((resolve) => { imgElement.onload = resolve; });
+
+      const hasilPrediksi = await prediksi(imgElement);
 
       const base64 = await convertToBase64(file);
 
       clearInterval(stepInterval);
-      navigate('/result', { state: { result, image: base64 } });
+
+      if (hasilPrediksi) {
+        const resultPayload = {
+          category: hasilPrediksi.label,
+          confidence: hasilPrediksi.confidence + "%"
+        };
+        navigate('/result', { state: { result: resultPayload, image: base64 } });
+      } else {
+        setIsScanning(false);
+        alert("Deteksi gagal.");
+      }
     } catch (error) {
       console.error(error);
       setIsScanning(false);
@@ -144,9 +159,10 @@ const ScanPage = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 onClick={startScan}
-                className="w-full mt-6 py-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg shadow-md shadow-blue-500/20 hover:shadow-lg transition-all"
+                disabled={!isReady}
+                className="w-full mt-6 py-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg shadow-md shadow-blue-500/20 hover:shadow-lg transition-all disabled:opacity-70 cursor-pointer disabled:cursor-not-allowed"
               >
-                Analisis dengan AI
+                {!isReady ? statusText : 'Analisis dengan AI'}
               </motion.button>
             )}
           </div>
