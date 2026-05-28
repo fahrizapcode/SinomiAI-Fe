@@ -21,9 +21,11 @@ const ResultPage = () => {
   const { result, image } = location.state || {};
 
   const [products, setProducts] = useState([]);
+  const [errorProducts, setErrorProducts] = useState(null);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [errorSteps, setErrorSteps] = useState(null);
   const [productDetails, setProductDetails] = useState(null);
 
   if (!result || !image) {
@@ -52,6 +54,7 @@ const ResultPage = () => {
     if (!selectedProduct) return;
 
     setIsGenerating(true);
+    setErrorSteps(null);
     try {
       const data = await generateStepByStep(result.category, selectedProduct.name);
       setProductDetails(data.details);
@@ -63,7 +66,8 @@ const ResultPage = () => {
         value: data.details.value
       });
     } catch (error) {
-      console.error(error);
+      console.error("Failed to generate steps:", error);
+      setErrorSteps("Gagal menyusun panduan langkah-langkah. Silakan coba lagi.");
     } finally {
       setIsGenerating(false);
     }
@@ -177,8 +181,13 @@ const ResultPage = () => {
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: selectedProduct ? 1 : 0.5, y: 0 }}
-                        className="mt-8"
+                        className="mt-8 flex flex-col gap-3"
                       >
+                        {errorSteps && (
+                          <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm text-center font-medium border border-red-100">
+                            {errorSteps}
+                          </div>
+                        )}
                         <button
                           onClick={handleGenerate}
                           disabled={!selectedProduct || isGenerating}
