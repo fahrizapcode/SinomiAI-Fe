@@ -46,8 +46,8 @@ const HistoryPage = () => {
     <div className="container mx-auto px-6 lg:px-12 py-12 min-h-[80vh]">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
         <div>
-          <h1 className="text-4xl font-semibold text-slate-900 mb-2 flex items-center gap-3">
-            <HistoryIcon className="w-8 h-8 text-blue-600" />
+          <h1 className="text-2xl md:text-4xl font-semibold text-slate-900 mb-2 flex items-center gap-3">
+            <HistoryIcon className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
             Riwayat Pemindaian
           </h1>
           <p className="text-slate-600">Data riwayat Anda tersimpan secara lokal di perangkat ini.</p>

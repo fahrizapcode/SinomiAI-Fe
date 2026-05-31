@@ -23,11 +23,20 @@ const EtalasePage = () => {
     }
   };
 
+  // Convert 08xxx -> 628xxx for wa.me
+  const formatWhatsApp = (number) => {
+    if (!number) return '';
+    const clean = number.replace(/\D/g, ''); // remove non-digits
+    if (clean.startsWith('0')) return '62' + clean.slice(1);
+    if (clean.startsWith('62')) return clean;
+    return '62' + clean;
+  };
+
   return (
     <div className="container mx-auto px-6 lg:px-12 py-12 min-h-[80vh]">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
         <div>
-          <h1 className="text-4xl font-semibold text-slate-900 mb-2 flex items-center gap-3">
+          <h1 className="text-xl md:text-4xl font-semibold text-slate-900 mb-2 flex items-center gap-3">
             <ShoppingBag className="w-8 h-8 text-blue-600" />
             Etalase Produk Daur Ulang
           </h1>
@@ -72,8 +81,8 @@ const EtalasePage = () => {
                 </div>
               </div>
               <div className="p-5 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-1">{product.name}</h3>
-                <p className="text-blue-600 font-bold mb-3">Rp {parseInt(product.price).toLocaleString('id-ID')}</p>
+                <h3 className="text-xl font-semibold text-slate-900 mb-2 line-clamp-1">{product.name}</h3>
+                <p className="text-blue-600 font-semibold mb-3">Rp {parseInt(product.price).toLocaleString('id-ID')}</p>
                 <div className="space-y-2 text-sm text-slate-600 mb-4 flex-1">
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4 text-slate-400" />
@@ -86,7 +95,7 @@ const EtalasePage = () => {
                 </div>
                 <div className="pt-4 border-t border-slate-100 mt-auto">
                   <a
-                    href={`https://wa.me/${product.whatsapp_number}?text=Halo, saya tertarik dengan produk ${product.name} yang ada di SinomiAI`}
+                    href={`https://wa.me/${formatWhatsApp(product.whatsapp_number)}?text=Halo, saya tertarik dengan produk *${product.name}* yang ada di SinomiAI. Apakah masih tersedia?`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full py-2 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] rounded-lg font-semibold flex justify-center items-center gap-2 transition-colors border border-[#25D366]/25 shadow-sm"

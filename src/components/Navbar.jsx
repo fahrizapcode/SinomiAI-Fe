@@ -110,7 +110,7 @@ const Navbar = () => {
                 key={link.name}
                 to={link.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center text-lg font-medium py-2 transition-colors ${location.pathname === link.path ? 'text-blue-600' : 'text-slate-600'
+                className={`flex items-center text-md font-medium py-2 transition-colors ${location.pathname === link.path ? 'text-blue-600' : 'text-slate-600'
                   }`}
               >
                 {link.name}
@@ -119,7 +119,7 @@ const Navbar = () => {
             <div className="h-px bg-slate-100 my-2"></div>
             {user ? (
               <div className="flex flex-col gap-3">
-                <span className="text-blue-600 font-medium px-1">Hai, {user.name}</span>
+                <span className="hidden sm:block text-blue-600 font-medium px-1">Hai, {user.name}</span>
                 <button
                   onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
                   className="flex items-center gap-2 text-red-500 py-2 hover:bg-red-50 rounded-lg px-2 transition-colors w-fit"

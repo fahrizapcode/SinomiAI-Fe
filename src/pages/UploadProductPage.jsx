@@ -92,9 +92,9 @@ const UploadProductPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-6 py-12 min-h-[80vh]">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors mb-8 font-medium">
-        <ArrowLeft className="w-5 h-5" />
+    <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-8 sm:py-12 min-h-[80vh]">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors mb-6 sm:mb-8 font-medium text-sm sm:text-base">
+        <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         Kembali
       </button>
 
@@ -102,26 +102,26 @@ const UploadProductPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glassmorphism-card p-8 rounded-xl border border-slate-100 shadow-md"
+          className="glassmorphism-card p-5 sm:p-8 rounded-xl border border-slate-100 shadow-md"
         >
-          <div className="mb-8 border-b border-slate-100 pb-6">
-            <h2 className="text-3xl font-semibold text-slate-900 mb-2">Pamerkan Produkmu</h2>
-            <p className="text-slate-600">Isi detail produk daur ulang yang ingin kamu tampilkan di Etalase.</p>
+          <div className="mb-6 sm:mb-8 border-b border-slate-100 pb-4 sm:pb-6">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-1 sm:mb-2">Pamerkan Produkmu</h2>
+            <p className="text-slate-600 text-sm sm:text-base">Isi detail produk daur ulang yang ingin kamu tampilkan di Etalase.</p>
           </div>
 
           {error && <div className="bg-red-50 border border-red-200 text-red-650 p-3 rounded-lg mb-6 text-sm text-center">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="col-span-1 md:col-span-2">
+            <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Foto Produk</label>
                 {!previewUrl ? (
                   <div
-                    className="border-2 border-dashed border-blue-200 rounded-lg p-8 flex flex-col items-center justify-center gap-3 hover:bg-blue-50 hover:border-blue-400 transition-all cursor-pointer"
+                    className="border-2 border-dashed border-blue-200 rounded-lg p-6 sm:p-8 flex flex-col items-center justify-center gap-3 hover:bg-blue-50 hover:border-blue-400 transition-all cursor-pointer"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <div className="p-3 bg-blue-50 rounded-full">
-                      <Upload className="w-6 h-6 text-blue-600" />
+                      <Upload className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <p className="text-sm font-semibold text-slate-800">Klik untuk memilih foto</p>
                   </div>
@@ -149,7 +149,11 @@ const UploadProductPage = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1">Kategori</label>
-                <input type="text" name="category" required value={formData.category} onChange={handleChange} className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg text-slate-800 outline-none transition-all shadow-sm" placeholder="Contoh: Anorganik" />
+                <select name="category" required value={formData.category} onChange={handleChange} className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg text-slate-800 outline-none transition-all shadow-sm appearance-none cursor-pointer">
+                  <option value="" disabled>Pilih Kategori</option>
+                  <option value="Organik">Organik</option>
+                  <option value="Anorganik">Anorganik</option>
+                </select>
               </div>
 
               <div>
@@ -176,7 +180,7 @@ const UploadProductPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition-all mt-6 shadow-md shadow-blue-500/10 disabled:opacity-75"
+              className="w-full py-3.5 sm:py-4 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition-all mt-4 sm:mt-6 shadow-md shadow-blue-500/10 disabled:opacity-75 text-sm sm:text-base"
             >
               {loading ? (
                 <div className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
