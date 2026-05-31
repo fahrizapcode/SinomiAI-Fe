@@ -89,10 +89,15 @@ const EtalasePage = () => {
                     <span>{product.seller_name}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-slate-400" />
+                    <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
                     <span className="line-clamp-1">{product.location}</span>
                   </div>
                 </div>
+                {product.description && (
+                  <p className="text-sm text-slate-600 mb-4 line-clamp-3 leading-relaxed">
+                    {product.description}
+                  </p>
+                )}
                 <div className="pt-4 border-t border-slate-100 mt-auto">
                   <a
                     href={`https://wa.me/${formatWhatsApp(product.whatsapp_number)}?text=Halo, saya tertarik dengan produk *${product.name}* yang ada di SinomiAI. Apakah masih tersedia?`}

@@ -172,8 +172,11 @@ const UploadProductPage = () => {
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Deskripsi Produk</label>
-                <textarea name="description" required value={formData.description} onChange={handleChange} rows="4" className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg text-slate-800 outline-none resize-none transition-all shadow-sm" placeholder="Ceritakan bahan yang digunakan dan proses pembuatannya..."></textarea>
+                <label className="block text-sm font-semibold text-slate-700 mb-1 flex justify-between">
+                  Deskripsi Produk
+                  <span className="text-slate-400 font-normal">{formData.description.length}/200</span>
+                </label>
+                <textarea name="description" required maxLength="200" value={formData.description} onChange={handleChange} rows="4" className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg text-slate-800 outline-none resize-none transition-all shadow-sm" placeholder="Ceritakan bahan yang digunakan dan proses pembuatannya..."></textarea>
               </div>
             </div>
 
