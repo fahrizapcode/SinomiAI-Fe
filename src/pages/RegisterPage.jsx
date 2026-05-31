@@ -35,16 +35,16 @@ const RegisterPage = () => {
 
   return (
     <div className="container mx-auto px-6 py-12 min-h-[80vh] flex justify-center items-center">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="glassmorphism-card p-8 rounded-xl border border-slate-100 shadow-md w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-blue-50 rounded-lg mb-4">
-            <Leaf className="w-8 h-8 text-blue-600" />
+          <div className="inline-flex p-3 rounded-lg mb-4">
+            <img src="/logo-only.png" alt="SinomiAI" className="h-12" />
           </div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-2">Daftar Akun</h2>
+          <h2 className="text-3xl font-semibold text-slate-900 mb-2">Daftar Akun</h2>
           <p className="text-slate-600">Bergabung untuk memamerkan produk daur ulangmu.</p>
         </div>
 
@@ -101,14 +101,14 @@ const RegisterPage = () => {
             </div>
           </div>
 
-          <button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all mt-6 shadow-md shadow-blue-500/10">
-            Daftar <ArrowRight className="w-4 h-4" />
+          <button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition-all mt-6 shadow-md shadow-blue-500/10">
+            Daftar <ArrowRight className="w-4 h-4 mt-[3px]" />
           </button>
         </form>
 
         <p className="mt-6 text-center text-slate-650 text-sm">
           Sudah punya akun?{' '}
-          <Link to="/login" className="text-blue-600 hover:text-blue-700 font-bold">
+          <Link to="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
             Masuk di sini
           </Link>
         </p>

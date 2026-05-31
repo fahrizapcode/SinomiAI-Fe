@@ -102,7 +102,7 @@ const ResultPage = () => {
             </div>
             <div className="p-6 border-t border-slate-100 bg-slate-50">
               <h3 className="text-sm font-semibold text-slate-500 mb-1">Hasil Deteksi AI</h3>
-              <p className={`text-3xl font-bold ${isOrganic ? 'text-green-600' : 'text-blue-600'}`}>
+              <p className={`text-3xl font-semibold ${isOrganic ? 'text-green-600' : 'text-blue-600'}`}>
                 {result.category}
               </p>
             </div>
@@ -120,14 +120,14 @@ const ResultPage = () => {
                 exit={{ opacity: 0, x: -20 }}
                 className="flex flex-col gap-6"
               >
-                <div className="glassmorphism-card p-8 rounded-xl border border-slate-100 shadow-md">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="p-3 bg-yellow-50 rounded-xl">
-                      <Lightbulb className="w-6 h-6 text-yellow-600" />
+                <div className="p-8 rounded-xl border border-slate-100 shadow-md">
+                  <div className="flex items-center gap-3 mb-6 bg-blue-100 p-4 rounded-lg">
+                    <div className="p-3 bg-white rounded-xl">
+                      <Lightbulb className="w-6 h-6 text-blue-500" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-slate-900">Rekomendasi AI</h2>
-                      <p className="text-slate-600 mt-1">Pilih produk bernilai yang ingin kamu buat dari sampah jenis {result.category}.</p>
+                      <h2 className="text-2xl font-semibold text-blue-700">Rekomendasi AI</h2>
+                      <p className="text-blue-500 mt-1">Pilih produk bernilai yang ingin kamu buat dari sampah jenis {result.category}.</p>
                     </div>
                   </div>
 
@@ -152,7 +152,7 @@ const ResultPage = () => {
                                 }`}
                             >
                               <div className="flex justify-between items-start mb-3">
-                                <h3 className={`font-bold text-lg ${isSelected ? 'text-blue-700' : 'text-slate-800'}`}>
+                                <h3 className={`font-semibold text-lg ${isSelected ? 'text-blue-700' : 'text-slate-800'}`}>
                                   {product.name}
                                 </h3>
                                 {isSelected && <CheckCircle className="w-5 h-5 text-blue-500" />}
@@ -222,11 +222,7 @@ const ResultPage = () => {
 
                   <div className="flex justify-between items-start mb-8">
                     <div>
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm font-semibold mb-3">
-                        <CheckCircle className="w-4 h-4" />
-                        Panduan Siap
-                      </div>
-                      <h2 className="text-3xl font-bold text-slate-900">{productDetails.title}</h2>
+                      <h2 className="text-3xl font-semibold text-slate-900">{productDetails.title}</h2>
                     </div>
                   </div>
 
@@ -237,7 +233,7 @@ const ResultPage = () => {
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-slate-500">Estimasi Waktu</p>
-                        <p className="font-bold text-slate-800">{productDetails.time}</p>
+                        <p className="font-semibold text-slate-800">{productDetails.time}</p>
                       </div>
                     </div>
                     <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-4">
@@ -246,7 +242,7 @@ const ResultPage = () => {
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-slate-500">Estimasi Nilai Jual</p>
-                        <p className="font-bold text-slate-800">{productDetails.value}</p>
+                        <p className="font-semibold text-slate-800">{productDetails.value}</p>
                       </div>
                     </div>
                   </div>
@@ -254,33 +250,37 @@ const ResultPage = () => {
                   <div className="space-y-8">
                     {/* Alat dan Bahan */}
                     <div>
-                      <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2 mb-4">
+                      <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-2 mb-4">
                         <Wrench className="w-5 h-5 text-slate-500" />
                         Alat & Bahan
                       </h3>
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {productDetails.materials.map((item, idx) => (
-                          <li key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100 text-slate-700 font-medium">
-                            <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
+                      <div className="p-5 rounded-xl bg-slate-50 border border-slate-100">
+                        <ul className="flex flex-col gap-3">
+                          {productDetails.materials.map((item, idx) => (
+                            <li key={idx} className="flex items-start gap-3 text-slate-700 font-medium">
+                              <div className="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-2"></div>
+                              <span className="leading-relaxed">{item.replace(/\*/g, '')}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
 
                     {/* Langkah Pengerjaan */}
                     <div>
-                      <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2 mb-4">
+                      <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-2 mb-4">
                         <ListChecks className="w-5 h-5 text-slate-500" />
                         Langkah Pengerjaan
                       </h3>
                       <div className="space-y-4">
                         {productDetails.steps.map((step, idx) => (
                           <div key={idx} className="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                            <div className="w-8 h-8 shrink-0 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">
+                            <div className="w-8 h-8 shrink-0 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-semibold text-sm">
                               {idx + 1}
                             </div>
-                            <p className="text-slate-700 leading-relaxed pt-1 font-medium">{step}</p>
+                            <p className="text-slate-700 leading-relaxed pt-1 font-medium">
+                              {step.replace(/\*/g, '')}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -289,7 +289,7 @@ const ResultPage = () => {
                     {/* Tips & Marketplaces */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="p-5 rounded-xl bg-yellow-50 border border-yellow-250/60">
-                        <h4 className="font-bold text-yellow-700 flex items-center gap-2 mb-2">
+                        <h4 className="font-semibold text-yellow-700 flex items-center gap-2 mb-2">
                           <Info className="w-4 h-4" />
                           Tips Keberhasilan
                         </h4>
@@ -297,7 +297,7 @@ const ResultPage = () => {
                       </div>
 
                       <div className="p-5 rounded-xl bg-blue-50 border border-blue-200/50">
-                        <h4 className="font-bold text-blue-700 flex items-center gap-2 mb-2">
+                        <h4 className="font-semibold text-blue-700 flex items-center gap-2 mb-2">
                           <ShoppingCart className="w-4 h-4" />
                           Rekomendasi Penjualan
                         </h4>
@@ -334,7 +334,7 @@ const ResultPage = () => {
           </AnimatePresence>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

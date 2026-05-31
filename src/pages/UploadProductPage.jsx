@@ -17,7 +17,7 @@ const UploadProductPage = () => {
   const [previewUrl, setPreviewUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,7 +48,6 @@ const UploadProductPage = () => {
           ...prev,
           name: initialData.name || '',
           category: initialData.category || '',
-          description: initialData.description || ''
         }));
       } catch (e) {
         console.error("Failed to parse initial data");
@@ -77,7 +76,7 @@ const UploadProductPage = () => {
 
     setLoading(true);
     setError('');
-    
+
     try {
       const token = localStorage.getItem('token');
       const submitData = new FormData();
@@ -100,13 +99,13 @@ const UploadProductPage = () => {
       </button>
 
       <div className="max-w-2xl mx-auto">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="glassmorphism-card p-8 rounded-xl border border-slate-100 shadow-md"
         >
           <div className="mb-8 border-b border-slate-100 pb-6">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Pamerkan Produkmu</h2>
+            <h2 className="text-3xl font-semibold text-slate-900 mb-2">Pamerkan Produkmu</h2>
             <p className="text-slate-600">Isi detail produk daur ulang yang ingin kamu tampilkan di Etalase.</p>
           </div>
 
@@ -169,7 +168,7 @@ const UploadProductPage = () => {
               </div>
 
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Deskripsi & Cerita Produk</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Deskripsi Produk</label>
                 <textarea name="description" required value={formData.description} onChange={handleChange} rows="4" className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg text-slate-800 outline-none resize-none transition-all shadow-sm" placeholder="Ceritakan bahan yang digunakan dan proses pembuatannya..."></textarea>
               </div>
             </div>
@@ -177,7 +176,7 @@ const UploadProductPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all mt-6 shadow-md shadow-blue-500/10 disabled:opacity-75"
+              className="w-full py-4 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition-all mt-6 shadow-md shadow-blue-500/10 disabled:opacity-75"
             >
               {loading ? (
                 <div className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin" />

@@ -34,9 +34,9 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Beranda', path: '/' },
-    { name: 'Pindai', path: '/scan', icon: <ScanLine className="w-4 h-4 mr-1" /> },
-    { name: 'Riwayat', path: '/history', icon: <History className="w-4 h-4 mr-1" /> },
-    { name: 'Etalase', path: '/etalase', icon: <ShoppingBag className="w-4 h-4 mr-1" /> },
+    { name: 'Pindai', path: '/scan' },
+    { name: 'Riwayat', path: '/history' },
+    { name: 'Etalase', path: '/etalase' },
   ];
 
   return (
@@ -57,15 +57,14 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className={`relative flex items-center text-sm font-medium transition-colors hover:text-blue-600 ${isActive ? 'text-blue-600' : 'text-slate-600'
+                className={`relative flex items-center justify-center text-sm font-medium transition-colors hover:text-blue-600 ${isActive ? 'text-blue-600' : 'text-slate-600'
                   }`}
               >
-                {link.icon}
                 {link.name}
                 {isActive && (
                   <motion.div
-                    layoutId="navbar-underline"
-                    className="absolute -bottom-2 left-0 right-0 h-0.5 bg-blue-600 rounded-full"
+                    layoutId="navbar-indicator"
+                    className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-[4px] h-[4px] bg-blue-600 rounded-full"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
@@ -114,7 +113,6 @@ const Navbar = () => {
                 className={`flex items-center text-lg font-medium py-2 transition-colors ${location.pathname === link.path ? 'text-blue-600' : 'text-slate-600'
                   }`}
               >
-                {link.icon}
                 {link.name}
               </Link>
             ))}

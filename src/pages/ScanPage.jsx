@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Camera, Image as ImageIcon, X } from 'lucide-react';
+import Webcam from 'react-webcam';
 import { useDeteksiSampah } from '../hooks/useDeteksiSampah';
 import { addHistory } from '../utils/db';
 
@@ -9,8 +10,10 @@ const ScanPage = () => {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const [isScanning, setIsScanning] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [scanStep, setScanStep] = useState(0);
   const fileInputRef = useRef(null);
+  const webcamRef = useRef(null);
   const navigate = useNavigate();
   const { isReady, statusText, isPredicting, hasil, prediksi, resetHasil } = useDeteksiSampah();
 
@@ -34,7 +37,27 @@ const ScanPage = () => {
   const resetSelection = () => {
     setFile(null);
     setPreviewUrl('');
+    setIsCameraOpen(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const captureCamera = () => {
+    const imageSrc = webcamRef.current?.getScreenshot();
+    if (imageSrc) {
+      setPreviewUrl(imageSrc);
+      // Convert base64 to File object
+      const arr = imageSrc.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      const newFile = new File([u8arr], "camera-capture.jpg", { type: mime });
+      setFile(newFile);
+      setIsCameraOpen(false);
+    }
   };
 
   const startScan = async () => {
@@ -100,19 +123,45 @@ const ScanPage = () => {
 
         {!isScanning ? (
           <div className="glassmorphism-card p-8 rounded-2xl border border-slate-100/80 shadow-md">
-            {!previewUrl ? (
+            {!previewUrl && !isCameraOpen ? (
               <div
                 className="border-2 border-dashed border-blue-200 rounded-xl p-12 flex flex-col items-center justify-center gap-4 hover:bg-blue-50 hover:border-blue-400 transition-all cursor-pointer group"
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
               >
-                <div className="p-4 bg-blue-50 rounded-full group-hover:scale-110 transition-transform">
+                <div className="p-4 shadow-xl rounded-full group-hover:scale-110 transition-transform">
                   <Upload className="w-8 h-8 text-blue-600" />
                 </div>
                 <div className="text-center">
                   <p className="text-lg font-semibold text-slate-800 mb-1">Drag & Drop foto di sini</p>
                   <p className="text-sm text-slate-600">atau klik untuk memilih file</p>
+                </div>
+              </div>
+            ) : isCameraOpen ? (
+              <div className="relative rounded-xl overflow-hidden aspect-video bg-black flex flex-col items-center justify-center group">
+                <Webcam
+                  audio={false}
+                  ref={webcamRef}
+                  screenshotFormat="image/jpeg"
+                  className="w-full h-full object-cover"
+                  videoConstraints={{ facingMode: "environment" }}
+                />
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
+                  <button
+                    onClick={captureCamera}
+                    className="p-4 bg-white text-blue-600 rounded-full hover:bg-slate-100 transition-colors shadow-lg"
+                    title="Ambil Foto"
+                  >
+                    <Camera className="w-6 h-6" />
+                  </button>
+                  <button
+                    onClick={() => setIsCameraOpen(false)}
+                    className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-lg"
+                    title="Batal"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
                 </div>
               </div>
             ) : (
@@ -146,8 +195,11 @@ const ScanPage = () => {
                 {previewUrl ? 'Ganti Foto' : 'Pilih dari Galeri'}
               </button>
               <button
-                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border border-slate-200 text-slate-400 hover:bg-slate-50 font-semibold transition-colors opacity-50 cursor-not-allowed"
-                title="Fitur kamera dalam pengembangan"
+                onClick={() => {
+                  setPreviewUrl('');
+                  setIsCameraOpen(true);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 font-semibold transition-colors"
               >
                 <Camera className="w-5 h-5" />
                 Gunakan Kamera
@@ -175,13 +227,6 @@ const ScanPage = () => {
             {/* Simple scanning line over image */}
             <div className="relative w-full max-w-sm aspect-square rounded-xl overflow-hidden mb-8 shadow-md">
               <img src={previewUrl} alt="Scanning" className="w-full h-full object-cover" />
-
-              {/* Animated Scan Line */}
-              <motion.div
-                className="absolute left-0 right-0 h-1 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)] z-10"
-                animate={{ top: ['0%', '100%', '0%'] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-              />
             </div>
 
             <div className="h-12 flex items-center justify-center">
@@ -191,7 +236,7 @@ const ScanPage = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="text-lg font-mono text-blue-600 font-semibold text-center"
+                  className="text-lg text-blue-600 font-semibold text-center"
                 >
                   {scanMessages[scanStep]}
                 </motion.p>

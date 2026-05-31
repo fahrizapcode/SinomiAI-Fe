@@ -74,7 +74,7 @@ const HistoryPage = () => {
       ) : filteredHistory.length === 0 ? (
         <div className="glassmorphism-card p-12 rounded-xl text-center flex flex-col items-center border border-slate-100 shadow-md">
           <HistoryIcon className="w-16 h-16 text-slate-400 mb-4" />
-          <h3 className="text-xl font-semibold text-slate-800 mb-2">Belum ada riwayat</h3>
+          <h3 className="text-xl font-semibold text-slate-800 mb-2">Riwayat tidak ditemukan</h3>
           <p className="text-slate-600 mb-6">Anda belum melakukan scan atau data tidak ditemukan.</p>
           <Link
             to="/scan"
@@ -135,11 +135,10 @@ const HistoryPage = () => {
                       </div>
                     ) : (
                       <>
-                        <p className="font-semibold text-slate-500 mb-1">Pengolahan:</p>
+                        <p className="font-semibold text-slate-500 mb-1">Produk:</p>
                         {item.processing?.title ? (
                           <div>
                             <p className="font-semibold text-slate-800 mb-1">{item.processing.title}</p>
-                            <p className="text-slate-600 line-clamp-2">{item.processing.steps[0]}</p>
                           </div>
                         ) : (
                           <ul className="list-disc pl-4 space-y-1">
@@ -152,14 +151,6 @@ const HistoryPage = () => {
                     )}
                   </div>
                   <div className="pt-4 border-t border-slate-100 mt-auto flex flex-col gap-2">
-                    <Link
-                      to="/result"
-                      state={{ result: { category: item.category, processing: item.processing, products: item.products, value: item.value, confidence: '100% (Riwayat)' }, image: item.image }}
-                      className="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center justify-center py-2 bg-blue-50 hover:bg-blue-100 rounded-lg gap-1 transition-colors group/link"
-                    >
-                      Lihat Detail
-                      <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                    </Link>
                     <button
                       onClick={() => {
                         const token = localStorage.getItem('token');
@@ -169,12 +160,12 @@ const HistoryPage = () => {
                           const initialData = {
                             category: item.category,
                             name: item.processing?.title || (item.products && item.products[0]?.name) || '',
-                            description: item.processing?.steps ? item.processing.steps.join(' ') : ''
+                            description: ""
                           };
                           window.location.href = `/upload-product?data=${encodeURIComponent(JSON.stringify(initialData))}`;
                         }
                       }}
-                      className="text-white hover:text-white text-sm font-semibold flex items-center justify-center py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm"
+                      className="text-white hover:text-white text-sm font-semibold cursor-pointer flex items-center justify-center py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm"
                     >
                       Jadikan Produk Etalase
                     </button>

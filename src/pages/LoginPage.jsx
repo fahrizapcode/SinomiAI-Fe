@@ -17,7 +17,7 @@ const LoginPage = () => {
       const data = await loginUser({ email, password });
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      
+
       const searchParams = new URLSearchParams(window.location.search);
       const redirect = searchParams.get('redirect') || '/etalase';
       navigate(redirect);
@@ -29,16 +29,16 @@ const LoginPage = () => {
 
   return (
     <div className="container mx-auto px-6 py-12 min-h-[80vh] flex justify-center items-center">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="glassmorphism-card p-8 rounded-xl border border-slate-100 shadow-md w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-blue-50 rounded-lg mb-4">
-            <Leaf className="w-8 h-8 text-blue-600" />
+          <div className="inline-flex p-3 mb-4">
+            <img src="/logo-only.png" alt="SinomiAI" className="h-12" />
           </div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-2">Selamat Datang</h2>
+          <h2 className="text-3xl font-semibold text-slate-900 mb-2">Selamat Datang</h2>
           <p className="text-slate-600">Masuk untuk memamerkan karya daur ulangmu.</p>
         </div>
 
@@ -81,15 +81,15 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all mt-4 shadow-md shadow-blue-500/10"
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition-all mt-4 shadow-md shadow-blue-500/10"
           >
-            Masuk <ArrowRight className="w-4 h-4" />
+            Masuk <ArrowRight className="w-4 h-4 mt-[3px]" />
           </button>
         </form>
 
         <p className="mt-6 text-center text-slate-650 text-sm">
           Belum punya akun?{' '}
-          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-bold">
+          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
             Daftar sekarang
           </Link>
         </p>

@@ -5,9 +5,9 @@ import { ArrowRight, Scan, Recycle, Database, Leaf } from 'lucide-react';
 
 const FeatureCard = ({ icon, title, description }) => (
   <div
-    className="glassmorphism-card hover:-translate-y-1 p-8 rounded-xl flex flex-col items-start gap-4 transition-all duration-350 cursor-pointer border border-slate-100/80 shadow-md"
+    className="glassmorphism-card hover:-translate-y-1 p-8 rounded-xl flex flex-col items-center text-center gap-4 transition-all duration-350 cursor-pointer border border-slate-100/80 shadow-md"
   >
-    <div className="p-3 bg-blue-50 rounded-lg text-blue-600 mb-2">
+    <div className="p-3 bg-blue-50 rounded-full text-blue-600 mb-2">
       {icon}
     </div>
     <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
@@ -15,25 +15,20 @@ const FeatureCard = ({ icon, title, description }) => (
   </div>
 );
 
-const GalleryItem = ({ image, category, title, delay }) => (
+const MasonryItem = ({ image, title, aspectClass, delay }) => (
   <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5, delay }}
-    className="group relative rounded-xl overflow-hidden aspect-square sm:aspect-video md:aspect-square bg-slate-100 shadow-sm"
+    initial={{ opacity: 0, y: 40 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.7, delay, ease: "easeOut" }}
+    className={`group relative rounded-lg overflow-hidden w-full bg-slate-50 shadow-sm hover:shadow-md transition-shadow duration-300 ${aspectClass}`}
   >
-    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-80 group-hover:opacity-100 transition-opacity" />
     <img
       src={image}
       alt={title}
       loading="lazy"
-      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
     />
-    <div className="absolute bottom-0 left-0 p-6 z-20 transform translate-y-3 group-hover:translate-y-0 transition-transform duration-300">
-      <span className="text-xs font-semibold tracking-wider text-blue-400 mb-2 block">{category}</span>
-      <h4 className="text-lg font-semibold text-white">{title}</h4>
-    </div>
   </motion.div>
 );
 
@@ -51,18 +46,23 @@ const LandingPage = () => {
           className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6 z-10 order-2 lg:order-1"
         >
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold text-slate-900 leading-tight tracking-tight w-full">
-            Ubah <span className="text-gradient">Sampah</span> Menjadi <br className="hidden lg:block" /> Berharga dengan AI
+            Ubah <span className="text-gradient">Sampahmu</span> Menjadi <br className="hidden lg:block" /> Berharga dengan AI
           </h1>
           <p className="text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed">
-            Pindai sampahmu dan temukan potensi daur ulang, estimasi nilai ekonomi, serta cara pengolahan terbaiknya secara instan. Bergabunglah dengan revolusi ekonomi sirkular hari ini.
+            Mari melihat sampah bukan sebagai masalah, tetapi sebagai peluang untuk menciptakan nilai, menjaga lingkungan, dan membangun masa depan yang lebih berkelanjutan.
           </p>
           <div className="mt-2 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Link
               to="/scan"
-              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-8 py-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all shadow-md hover:shadow-lg shadow-blue-500/20 group"
+              className="relative overflow-hidden inline-flex w-full sm:w-auto items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-600 bg-[length:200%_auto] hover:bg-right text-white font-semibold text-lg transition-all duration-500 shadow-xl shadow-blue-500/30 hover:shadow-indigo-500/40 group"
             >
-              Scan Sampah Sekarang
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              {/* Shine effect */}
+              <div className="absolute top-0 left-[-100%] w-[120%] h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-30deg] group-hover:left-[200%] transition-all duration-1000 ease-out z-0" />
+
+              <span className="relative z-10 flex items-center gap-2 font-semibold text-lg">
+                Pindai Sampah Sekarang
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300 mt-[3px]" />
+              </span>
             </Link>
           </div>
         </motion.div>
@@ -99,12 +99,12 @@ const LandingPage = () => {
           <FeatureCard
             icon={<Scan className="w-8 h-8" />}
             title="Klasifikasi Sampah Ai"
-            description="Sistem visi cerdas kami mendeteksi dan mengkategorikan sampah organik dan anorganik secara instan dengan akurasi tinggi."
+            description="Cukup upload gambar sampah, AI kami mendeteksi dan mengkategorikan sampah secara instan."
           />
           <FeatureCard
             icon={<Recycle className="w-8 h-8" />}
             title="Ide Ekonomi Sirkular"
-            description="Dapatkan rekomendasi praktis tentang cara mengolah sampah menjadi kompos, eko-enzim, atau kerajinan daur ulang kreatif."
+            description="Dapatkan rekomendasi praktis tentang cara mengolah sampah menjadi kompos atau kerajinan daur ulang yang bernilai."
           />
           <FeatureCard
             icon={<Database className="w-8 h-8" />}
@@ -116,81 +116,37 @@ const LandingPage = () => {
 
       {/* Gallery Section */}
       <section className="container mx-auto px-6 lg:px-12 py-12 flex-1">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-6 gap-6">
           <div>
-            <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-4">Inspirasi Daur Ulang</h2>
+            <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-4">Galeri Kreativitas</h2>
             <p className="text-slate-600 max-w-xl">Lihat bagaimana sampah biasa dapat diubah menjadi produk kreatif yang bernilai ekonomi tinggi.</p>
           </div>
-          <Link to="/scan" className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 group">
-            Mulai berkreasi <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 lg:gap-6">
-          <GalleryItem
-            title="Pot Bunga Estetik"
-            category="Botol Plastik"
-            image="https://images.unsplash.com/photo-1595856422201-9a9978711822?auto=format&fit=crop&q=80&w=400"
-            delay={0.1}
-          />
-          <GalleryItem
-            title="Tas Belanja"
-            category="Kemasan Kopi"
-            image="https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&q=80&w=400"
-            delay={0.15}
-          />
-          <GalleryItem
-            title="Lampu Hias"
-            category="Kardus Bekas"
-            image="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=80&w=400"
-            delay={0.2}
-          />
-          <GalleryItem
-            title="Rak Buku Mini"
-            category="Kayu Palet"
-            image="https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?auto=format&fit=crop&q=80&w=400"
-            delay={0.25}
-          />
-          <GalleryItem
-            title="Tempat Pensil"
-            category="Kaleng Bekas"
-            image="https://images.unsplash.com/photo-1585255474753-48895085ea4f?auto=format&fit=crop&q=80&w=400"
-            delay={0.3}
-          />
-          {/* Row 2 */}
-          <GalleryItem
-            title="Kompos Organik"
-            category="Sisa Makanan"
-            image="https://images.unsplash.com/photo-1595274457723-9c98bd0ea0d9?auto=format&fit=crop&q=80&w=400"
-            delay={0.35}
-          />
-          <GalleryItem
-            title="Keranjang Serbaguna"
-            category="Koran Bekas"
-            image="https://images.unsplash.com/photo-1621459580665-27a3c316719e?auto=format&fit=crop&q=80&w=400"
-            delay={0.4}
-          />
-          <GalleryItem
-            title="Hiasan Dinding"
-            category="Tutup Botol"
-            image="https://images.unsplash.com/photo-1618424181497-157f25b6ce5e?auto=format&fit=crop&q=80&w=400"
-            delay={0.45}
-          />
-          <GalleryItem
-            title="Vas Kaca Daur Ulang"
-            category="Pecahan Beling"
-            image="https://images.unsplash.com/photo-1578339850257-8fb6b4f6bb99?auto=format&fit=crop&q=80&w=400"
-            delay={0.5}
-          />
-          <GalleryItem
-            title="Eco Enzyme"
-            category="Kulit Buah"
-            image="https://images.unsplash.com/photo-1581579186913-46eaec8ee7c8?auto=format&fit=crop&q=80&w=400"
-            delay={0.55}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Kolom 1 */}
+          <div className="flex flex-col gap-6">
+            <MasonryItem image="/craft/c1.jpg" title="Karya 1" aspectClass="aspect-[3/4]" delay={0.1} />
+            <MasonryItem image="/craft/c2.jpg" title="Karya 2" aspectClass="aspect-[4/3]" delay={0.2} />
+            <MasonryItem image="/craft/c3.jpg" title="Karya 3" aspectClass="aspect-square" delay={0.3} />
+          </div>
+
+          {/* Kolom 2 */}
+          <div className="flex flex-col gap-6">
+            <MasonryItem image="/craft/c4.jpg" title="Karya 4" aspectClass="aspect-[4/3]" delay={0.2} />
+            <MasonryItem image="/craft/c5.jpg" title="Karya 5" aspectClass="aspect-[3/4]" delay={0.3} />
+            <MasonryItem image="/craft/c6.jpg" title="Karya 6" aspectClass="aspect-square" delay={0.4} />
+          </div>
+
+          {/* Kolom 3 */}
+          <div className="flex flex-col gap-6">
+            <MasonryItem image="/craft/c7.jpg" title="Karya 7" aspectClass="aspect-square" delay={0.3} />
+            <MasonryItem image="/craft/c8.jpg" title="Karya 8" aspectClass="aspect-[4/3]" delay={0.4} />
+            <MasonryItem image="/craft/c9.jpg" title="Karya 9" aspectClass="aspect-[3/4]" delay={0.5} />
+          </div>
         </div>
-      </section>
-    </div>
+      </section >
+    </div >
   );
 };
 
